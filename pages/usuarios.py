@@ -1,104 +1,80 @@
 import streamlit as st
 from supabase import create_client
 
-SUPABASE_URL = st.secrets["SUPABASE_URL"]
-SUPABASE_KEY = st.secrets["SUPABASE_KEY"]
-
-supabase = create_client(SUPABASE_URL, SUPABASE_KEY)
-
-
 def tela_usuarios():
 
-    st.title("👥 Gerenciamento de Usuários")
+    st.title("👥 Gerenciar Usuários")
 
-    # Buscar todos perfis
-    response = supabase.table("perfis").select("*").execute()
+    # Conexão
+    supabase = create_client(
+        st.secrets["SUPABASE_URL"],
+        st.secrets["SUPABASE_KEY"]
+    )
 
-    if not response.data:
-        st.info("Nenhum usuário encontrado.")
+    # Botão voltar
+    if st.button("⬅ Voltar"):
+        st.session_state.pagina = "inicio"
+        st.rerun()
+
+    st.divider()
+
+    # Buscar usuários
+    usuarios = supabase.table("perfis").select("*").execute()
+
+    if not usuarios.data:
+        st.warning("Nenhum usuário encontrado.")
         return
 
-    usuarios = response.data
+    for user in usuarios.data:
 
-    nomes = [u["nome_completo"] for u in usuarios]
+        with st.expander(f"{user['nome_completo']} ({user['tipo_usuario']})"):
 
-    usuario_selecionado = st.selectbox(
-        "Selecione um usuário",
-        nomes,
-        key="usuarios_select"
-    )
+            # Campos editáveis
+            novo_nome = st.text_input(
+                "Nome Completo",
+                value=user["nome_completo"],
+                key=f"nome_{user['id']}"
+            )
 
-    usuario = next(u for u in usuarios if u["nome_completo"] == usuario_selecionado)
+            novo_curso = st.text_input(
+                "Curso",
+                value=user.get("curso", ""),
+                key=f"curso_{user['id']}"
+            )
 
-    st.divider()
+            novo_tipo = st.selectbox(
+                "Tipo de Usuário",
+                ["aluno", "admin"],
+                index=0 if user["tipo_usuario"] == "aluno" else 1,
+                key=f"tipo_{user['id']}"
+            )
 
-    st.subheader("📄 Dados do Usuário")
+            col1, col2 = st.columns(2)
 
-    st.write(f"ID: {usuario['id']}")
-    st.write(f"Curso: {usuario['curso']}")
-    st.write(f"Tipo: {usuario['tipo_usuario']}")
+            # Salvar alterações
+            with col1:
+                if st.button("💾 Salvar Alterações", key=f"salvar_{user['id']}"):
 
-    st.divider()
+                    supabase.table("perfis") \
+                        .update({
+                            "nome_completo": novo_nome,
+                            "curso": novo_curso,
+                            "tipo_usuario": novo_tipo
+                        }) \
+                        .eq("id", user["id"]) \
+                        .execute()
 
-    # ==========================
-    # ALTERAR CURSO
-    # ==========================
-    novo_curso = st.text_input(
-        "Alterar curso",
-        value=usuario["curso"],
-        key="usuarios_curso"
-    )
+                    st.success("Usuário atualizado com sucesso!")
+                    st.rerun()
 
-    if st.button("💾 Atualizar Curso", key="usuarios_update"):
-        supabase.table("perfis") \
-            .update({"curso": novo_curso}) \
-            .eq("id", usuario["id"]) \
-            .execute()
+            # Deletar usuário
+            with col2:
+                if st.button("🗑 Deletar", key=f"delete_{user['id']}"):
 
-        st.success("Curso atualizado!")
-        st.rerun()
+                    supabase.table("perfis") \
+                        .delete() \
+                        .eq("id", user["id"]) \
+                        .execute()
 
-    st.divider()
-
-    # ==========================
-    # ALTERAR PRIVILÉGIO
-    # ==========================
-    if usuario["tipo_usuario"] == "admin":
-
-        if st.button("⬇️ Remover Admin", key="usuarios_remove_admin"):
-            supabase.table("perfis") \
-                .update({"tipo_usuario": "aluno"}) \
-                .eq("id", usuario["id"]) \
-                .execute()
-
-            st.success("Privilégio removido!")
-            st.rerun()
-
-    else:
-
-        if st.button("⬆️ Tornar Admin", key="usuarios_make_admin"):
-            supabase.table("perfis") \
-                .update({"tipo_usuario": "admin"}) \
-                .eq("id", usuario["id"]) \
-                .execute()
-
-            st.success("Usuário promovido a admin!")
-            st.rerun()
-
-    st.divider()
-
-    # ==========================
-    # DELETAR USUÁRIO
-    # ==========================
-    st.warning("⚠️ Zona perigosa")
-
-    if st.button("🗑️ Deletar Usuário", key="usuarios_delete"):
-
-        # Deleta apenas da tabela perfis
-        supabase.table("perfis") \
-            .delete() \
-            .eq("id", usuario["id"]) \
-            .execute()
-
-        st.success("Usuário removido da tabela perfis.")
-        st.rerun()
+                    st.warning("Usuário deletado.")
+                    st.rerun()
