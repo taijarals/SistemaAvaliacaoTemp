@@ -1,72 +1,49 @@
 import streamlit as st
+from supabase import create_client
+import os
+from dotenv import load_dotenv
+import pandas as pd
+
+load_dotenv()
+
+SUPABASE_URL = os.getenv("SUPABASE_URL")
+SUPABASE_KEY = os.getenv("SUPABASE_KEY")
+
+supabase = create_client(SUPABASE_URL, SUPABASE_KEY)
 
 st.set_page_config(page_title="Sistema de Votação", layout="centered")
 
-# -------------------------
-# Inicialização do estado
-# -------------------------
-if "pagina" not in st.session_state:
-    st.session_state.pagina = 1
-
-if "dados_usuario" not in st.session_state:
-    st.session_state.dados_usuario = {}
-
-# -------------------------
-# LISTAS FIXAS
-# -------------------------
-cursos = [
-    "Engenharia da Computação",
-    "Ciência da Computação",
-    "Sistemas de Informação",
-    "Análise e Desenvolvimento de Sistemas"
-]
-
-disciplinas = [
-    "Estrutura de Dados",
-    "Banco de Dados",
-    "Algoritmos",
-    "Programação Web"
-]
+# =========================
+# MENU LATERAL
+# =========================
+menu = st.sidebar.selectbox(
+    "Menu",
+    ["Votação", "Painel Administrativo"]
+)
 
 # =========================
-# TELA 1 - IDENTIFICAÇÃO
+# TELA DE VOTAÇÃO
 # =========================
-if st.session_state.pagina == 1:
-    
+if menu == "Votação":
+
     st.title("Sistema de Votação")
-    st.subheader("Identificação do Aluno")
 
     nome = st.text_input("Nome Completo")
-    curso = st.selectbox("Curso", cursos)
-    disciplina = st.selectbox("Disciplina", disciplinas)
 
-    if st.button("Ir para votação"):
-        if nome.strip() == "":
-            st.warning("Por favor, preencha seu nome completo.")
-        else:
-            st.session_state.dados_usuario = {
-                "nome": nome,
-                "curso": curso,
-                "disciplina": disciplina
-            }
-            st.session_state.pagina = 2
-            st.rerun()
+    curso = st.selectbox("Curso", [
+        "Engenharia da Computação",
+        "Ciência da Computação",
+        "Sistemas de Informação"
+    ])
 
-# =========================
-# TELA 2 - VOTAÇÃO
-# =========================
-elif st.session_state.pagina == 2:
-    
-    st.title("Avaliação")
+    disciplina = st.selectbox("Disciplina", [
+        "Estrutura de Dados",
+        "Banco de Dados",
+        "Algoritmos"
+    ])
 
-    st.write("### Avaliador:")
-    st.write(f"**Nome:** {st.session_state.dados_usuario['nome']}")
-    st.write(f"**Curso:** {st.session_state.dados_usuario['curso']}")
-    st.write(f"**Disciplina:** {st.session_state.dados_usuario['disciplina']}")
-    
     st.divider()
-
-    st.write("### Dê uma nota de 1 a 5:")
+    st.subheader("Avaliação (1 a 5)")
 
     apresentacao = st.slider("1 - Apresentação", 1, 5)
     conhecimento = st.slider("2 - Conhecimento", 1, 5)
@@ -74,19 +51,91 @@ elif st.session_state.pagina == 2:
     resolutividade = st.slider("4 - Resolutividade", 1, 5)
     criatividade = st.slider("5 - Criatividade", 1, 5)
 
+    # -------------------------
+    # CÁLCULO DA NOTA NORMALIZADA
+    # -------------------------
+    soma = (
+        apresentacao +
+        conhecimento +
+        aderencia +
+        resolutividade +
+        criatividade
+    )
+
+    nota_final = soma / 25  # máximo = 1.0
+
+    st.info(f"Nota Final (máx 1.0): {round(nota_final, 3)}")
+
     if st.button("Enviar votação"):
-        
-        resultado = {
-            "Apresentação": apresentacao,
-            "Conhecimento": conhecimento,
-            "Aderência ao Tema": aderencia,
-            "Resolutividade": resolutividade,
-            "Criatividade": criatividade
-        }
 
-        st.success("Votação registrada com sucesso!")
+        if nome.strip() == "":
+            st.warning("Por favor, informe seu nome completo.")
+        else:
 
-        st.write("### Notas enviadas:")
-        st.json(resultado)
+            dados = {
+                "nome": nome.strip(),
+                "curso": curso,
+                "disciplina": disciplina,
+                "apresentacao": apresentacao,
+                "conhecimento": conhecimento,
+                "aderencia": aderencia,
+                "resolutividade": resolutividade,
+                "criatividade": criatividade,
+                "media": nota_final
+            }
 
-        # Aqui você pode salvar em banco depois
+            try:
+                supabase.table("votos").insert(dados).execute()
+                st.success(f"Voto registrado com sucesso! Nota final: {round(nota_final, 3)}")
+            except Exception:
+                st.error("Você já votou nessa disciplina!")
+
+# =========================
+# PAINEL ADMINISTRATIVO
+# =========================
+elif menu == "Painel Administrativo":
+
+    st.title("Painel Administrativo")
+
+    response = supabase.table("votos").select("*").execute()
+
+    if response.data:
+
+        df = pd.DataFrame(response.data)
+
+        st.subheader("Todos os votos")
+        st.dataframe(df)
+
+        st.divider()
+
+        # -------------------------
+        # MÉDIA POR DISCIPLINA
+        # -------------------------
+        st.subheader("Média por Disciplina")
+
+        medias = (
+            df.groupby("disciplina")["media"]
+            .mean()
+            .reset_index()
+        )
+
+        medias["media"] = medias["media"].round(3)
+
+        medias = medias.sort_values(by="media", ascending=False)
+
+        st.dataframe(medias)
+
+        st.divider()
+
+        # -------------------------
+        # RANKING
+        # -------------------------
+        st.subheader("🏆 Ranking")
+
+        ranking = medias.copy()
+        ranking["posição"] = range(1, len(ranking) + 1)
+
+        st.dataframe(ranking)
+
+    else:
+        st.info("Nenhum voto registrado ainda.")
