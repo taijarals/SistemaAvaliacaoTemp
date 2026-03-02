@@ -32,24 +32,29 @@ SUPABASE_KEY = st.secrets["SUPABASE_KEY"]
 supabase = create_client(SUPABASE_URL, SUPABASE_KEY)
 
 
-# =========================================================
 # 4️⃣ BUSCAR PERFIL (apenas uma vez por sessão)
 # =========================================================
 if "perfil" not in st.session_state:
-    perfil = supabase.table("perfis") \
+
+    response = supabase.table("perfis") \
         .select("*") \
         .eq("id", st.session_state.user.id) \
         .execute()
 
-    if not perfil.data:
+    if not response.data:
         st.error("Perfil não encontrado.")
         st.stop()
 
-    st.session_state.perfil = perfil.data[0]
+    perfil = response.data[0]
 
-perfil = st.session_state.perfil
-tipo_usuario = perfil["tipo_usuario"]
-nome_usuario = perfil["nome_completo"]
+    # Salva tudo globalmente
+    st.session_state.perfil = perfil
+    st.session_state.tipo_usuario = perfil["tipo_usuario"]
+    st.session_state.nome_usuario = perfil["nome_completo"]
+
+# Agora pode usar em qualquer página:
+tipo_usuario = st.session_state.tipo_usuario
+nome_usuario = st.session_state.nome_usuario
 
 
 # =========================================================
