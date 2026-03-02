@@ -95,6 +95,11 @@ if st.session_state.pagina == "inicio":
             st.session_state.pagina = "votacao"
             st.rerun()
 
+    with col2:
+        if st.button("👥 Gerenciar Usuários", use_container_width=True):
+            st.session_state.pagina = "usuarios"
+            st.rerun()
+
     # Área exclusiva de admin
     if tipo_usuario == "admin":
 
@@ -118,11 +123,6 @@ if st.session_state.pagina == "inicio":
         with col5:
             if st.button("🎯 Desafios", use_container_width=True):
                 st.session_state.pagina = "desafios"
-                st.rerun()
-                
-        with col6:
-            if st.button("👥 Gerenciar Usuários", use_container_width=True):
-                st.session_state.pagina = "usuarios"
                 st.rerun()
 
 # =========================================================
