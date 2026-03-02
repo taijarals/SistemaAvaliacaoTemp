@@ -133,10 +133,10 @@ elif st.session_state.pagina == "disciplinas" and tipo_usuario == "admin":
 elif st.session_state.pagina == "desafios" and tipo_usuario == "admin":
     tela_desafios()
 
+elif st.session_state.pagina == "usuarios" and tipo_usuario == "admin":
+    tela_usuarios()
+
 else:
     st.warning("Você não tem permissão para acessar esta página.")
     st.session_state.pagina = "inicio"
     st.rerun()
-
-elif st.session_state.pagina == "usuarios" and tipo_usuario == "admin":
-    tela_usuarios()
