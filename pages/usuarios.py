@@ -11,22 +11,23 @@ def tela_usuarios():
 
     st.title("👥 Gerenciamento de Usuários")
 
-    # Buscar perfis
-    response = supabase.table("perfis").select("*").execute()
+    if tipo_usuario == "admin":
+        # Buscar perfis
+        response = supabase.table("perfis").select("*").execute()
 
-    if not response.data:
-        st.info("Nenhum usuário encontrado.")
-        return
+        if not response.data:
+            st.info("Nenhum usuário encontrado.")
+            return
 
-    usuarios = response.data
+        usuarios = response.data
 
-    nomes = [u["nome_completo"] for u in usuarios]
+        nomes = [u["nome_completo"] for u in usuarios]
 
-    usuario_selecionado = st.selectbox(
-        "Selecione um usuário",
-        nomes,
-        key="usuarios_select"
-    )
+        usuario_selecionado = st.selectbox(
+            "Selecione um usuário",
+            nomes,
+            key="usuarios_select"
+        )
 
     usuario = next(u for u in usuarios if u["nome_completo"] == usuario_selecionado)
 
@@ -98,7 +99,7 @@ def tela_usuarios():
     # ==========================
     # ZONA PERIGOSA
     # ==========================
-    st.warning("⚠️ Zona perigosa")
+    #st.warning("⚠️ Zona perigosa")
 
     if st.button("🗑️ Deletar Usuário", key="usuarios_delete"):
 
