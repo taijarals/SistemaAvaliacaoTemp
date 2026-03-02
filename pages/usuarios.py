@@ -13,23 +13,23 @@ def tela_usuarios():
 
     st.title("👥 Gerenciamento de Usuários")
 
-    if tipo_usuario == "admin":
-        # Buscar perfis
-        response = supabase.table("perfis").select("*").execute()
+    # Buscar perfis
+    response = supabase.table("perfis").select("*").execute()
 
-        if not response.data:
-            st.info("Nenhum usuário encontrado.")
-            return
+    if not response.data:
+        st.info("Nenhum usuário encontrado.")
+        return
 
-        usuarios = response.data
+    usuarios = response.data
 
-        nomes = [u["nome_completo"] for u in usuarios]
+    nomes = [u["nome_completo"] for u in usuarios]
 
-        usuario_selecionado = st.selectbox(
-            "Selecione um usuário",
-            nomes,
-            key="usuarios_select"
-        )
+    usuario_selecionado = st.selectbox(
+        "Selecione um usuário",
+        nomes,
+        key="usuarios_select",
+        disabled=(st.session_state.tipo_usuario != "admin")
+    )
 
     usuario = next(u for u in usuarios if u["nome_completo"] == usuario_selecionado)
 
