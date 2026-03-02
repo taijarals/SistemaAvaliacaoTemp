@@ -23,7 +23,7 @@ def tela_usuarios():
 
     # Se o nome existir na lista, pega o índice
     if st.session_state.nome_usuario in nomes:
-        indice_padrao = nomes.index(nome_logado)
+        indice_padrao = nomes.index(st.session_state.nome_usuario)
     else:
         indice_padrao = 0  # fallback
 
