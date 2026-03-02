@@ -80,7 +80,7 @@ elif st.session_state.pagina == 2:
             "Apresentação": apresentacao,
             "Conhecimento": conhecimento,
             "Aderência ao Tema": aderencia,
-            "Resolutividade": resolutividade
+            "Resolutividade": resolutividade,
             "Criatividade": criatividade
         }
 
