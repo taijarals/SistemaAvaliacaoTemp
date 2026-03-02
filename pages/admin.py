@@ -23,7 +23,7 @@ def tela_admin():
 
     aba = st.selectbox(
         "Seção",
-        ["Disciplinas", "Relatórios"]
+        ["Disciplinas", "Relatórios"],
         key="admin_selectbox"
     )
 
