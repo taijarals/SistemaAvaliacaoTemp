@@ -11,7 +11,7 @@ def tela_usuarios():
 
     st.title("👥 Gerenciamento de Usuários")
 
-    if tipo_usuario == "admin":
+    if  st.session_state.tipo_usuario == "admin":
         # Buscar perfis
         response = supabase.table("perfis").select("*").execute()
 
