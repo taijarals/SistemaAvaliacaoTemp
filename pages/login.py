@@ -59,7 +59,22 @@ def tela_login():
                     "password": senha
                 })
 
+                # Se precisar confirmar email
+                if response.user is None:
+                    st.warning("Verifique seu email para confirmar o cadastro.")
+                    return
+
                 user_id = response.user.id
+
+                # Verifica se já existe perfil
+                perfil_existente = supabase.table("perfis") \
+                    .select("*") \
+                    .eq("id", user_id) \
+                    .execute()
+
+                if perfil_existente.data:
+                    st.warning("Perfil já existe.")
+                    return
 
                 supabase.table("perfis").insert({
                     "id": user_id,
@@ -71,4 +86,4 @@ def tela_login():
                 st.success("Cadastro realizado! Faça login.")
 
             except Exception as e:
-                st.error(f"Erro no cadastro: {e}")
+                st.error(f"Erro real: {e}")
