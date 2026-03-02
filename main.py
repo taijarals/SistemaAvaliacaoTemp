@@ -5,6 +5,7 @@ from pages.votacao import tela_votacao
 from pages.admin import tela_admin
 from pages.disciplinas import tela_disciplinas
 from pages.desafios import tela_desafios
+from pages.usuarios import tela_usuarios
 
 st.set_page_config(page_title="Sistema de Avaliação", layout="centered")
 
@@ -92,6 +93,10 @@ if st.session_state.pagina == "inicio":
         if st.button("🗳️ Votação", use_container_width=True):
             st.session_state.pagina = "votacao"
             st.rerun()
+    
+    with st.button("👥 Gerenciar Usuários", use_container_width=True):
+    st.session_state.pagina = "usuarios"
+    st.rerun()
 
     if tipo_usuario == "admin":
 
@@ -132,3 +137,6 @@ else:
     st.warning("Você não tem permissão para acessar esta página.")
     st.session_state.pagina = "inicio"
     st.rerun()
+
+elif st.session_state.pagina == "usuarios" and tipo_usuario == "admin":
+    tela_usuarios()
