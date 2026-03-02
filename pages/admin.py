@@ -24,6 +24,7 @@ def tela_admin():
     aba = st.selectbox(
         "Seção",
         ["Disciplinas", "Relatórios"]
+        key="admin_selectbox"
     )
 
     if aba == "Disciplinas":
