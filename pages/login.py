@@ -71,4 +71,4 @@ def tela_login():
                 st.success("Cadastro realizado! Faça login.")
 
             except Exception as e:
-                st.error("Erro no cadastro")
+                st.error(f"Erro no cadastro: {e}")
