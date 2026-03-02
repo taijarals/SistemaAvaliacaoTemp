@@ -140,7 +140,7 @@ elif st.session_state.pagina == "disciplinas" and tipo_usuario == "admin":
 elif st.session_state.pagina == "desafios" and tipo_usuario == "admin":
     tela_desafios()
 
-elif st.session_state.pagina == "usuarios" and tipo_usuario == "admin":
+elif st.session_state.pagina == "usuarios":
     tela_usuarios()
 
 else:
