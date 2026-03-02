@@ -72,6 +72,7 @@ elif st.session_state.pagina == 2:
     conhecimento = st.slider("2 - Conhecimento", 1, 5)
     aderencia = st.slider("3 - Aderência ao Tema", 1, 5)
     resolutividade = st.slider("4 - Resolutividade", 1, 5)
+    resolutividade = st.slider("5 - Criatividade", 1, 5)
 
     if st.button("Enviar votação"):
         
@@ -80,6 +81,7 @@ elif st.session_state.pagina == 2:
             "Conhecimento": conhecimento,
             "Aderência ao Tema": aderencia,
             "Resolutividade": resolutividade
+            "Criatividade": criatividade
         }
 
         st.success("Votação registrada com sucesso!")
