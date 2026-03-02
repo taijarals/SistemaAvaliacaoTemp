@@ -32,6 +32,7 @@ SUPABASE_KEY = st.secrets["SUPABASE_KEY"]
 supabase = create_client(SUPABASE_URL, SUPABASE_KEY)
 
 
+# =========================================================
 # 4️⃣ BUSCAR PERFIL (apenas uma vez por sessão)
 # =========================================================
 if "perfil" not in st.session_state:
