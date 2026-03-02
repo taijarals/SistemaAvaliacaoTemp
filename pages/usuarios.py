@@ -6,6 +6,7 @@ SUPABASE_KEY = st.secrets["SUPABASE_KEY"]
 
 supabase = create_client(SUPABASE_URL, SUPABASE_KEY)
 
+nome_logado = st.session_state.perfil["nome_completo"]
 
 def tela_usuarios():
 
@@ -22,9 +23,16 @@ def tela_usuarios():
 
     nomes = [u["nome_completo"] for u in usuarios]
 
+    # Se o nome existir na lista, pega o índice
+    if nome_logado in nomes:
+        indice_padrao = nomes.index(nome_logado)
+    else:
+        indice_padrao = 0  # fallback
+
     usuario_selecionado = st.selectbox(
         "Selecione um usuário",
         nomes,
+        index=indice_padrao,
         key="usuarios_select",
         disabled=(st.session_state.tipo_usuario != "admin")
     )
