@@ -77,7 +77,8 @@ def tela_usuarios():
         "Tipo de usuário",
         ["aluno", "admin"],
         index=0 if usuario["tipo_usuario"] == "aluno" else 1,
-        key="usuarios_tipo"
+        key="usuarios_tipo",
+        disabled=(st.session_state.tipo_usuario != "admin")
     )
 
     if st.button("💾 Salvar Alterações", key="usuarios_update"):
