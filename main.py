@@ -95,8 +95,8 @@ if st.session_state.pagina == "inicio":
             st.rerun()
     
     with st.button("👥 Gerenciar Usuários", use_container_width=True):
-    st.session_state.pagina = "usuarios"
-    st.rerun()
+        st.session_state.pagina = "usuarios"
+        st.rerun()
 
     if tipo_usuario == "admin":
 
