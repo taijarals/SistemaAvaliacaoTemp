@@ -87,32 +87,40 @@ if st.session_state.pagina == "inicio":
 
     st.title("Sistema de Avaliação")
 
+    # Primeira linha de botões
     col1, col2 = st.columns(2)
 
     with col1:
         if st.button("🗳️ Votação", use_container_width=True):
             st.session_state.pagina = "votacao"
             st.rerun()
-    
-    with st.button("👥 Gerenciar Usuários", use_container_width=True):
-        st.session_state.pagina = "usuarios"
-        st.rerun()
 
+    with col2:
+        if st.button("👥 Gerenciar Usuários", use_container_width=True):
+            st.session_state.pagina = "usuarios"
+            st.rerun()
+
+    # Área exclusiva de admin
     if tipo_usuario == "admin":
 
-        with col2:
-            if st.button("🔒 Painel Administrativo", use_container_width=True):
-                st.session_state.pagina = "admin"
-                st.rerun()
+        st.divider()
+        st.subheader("Área Administrativa")
 
         col3, col4 = st.columns(2)
 
         with col3:
+            if st.button("🔒 Painel Administrativo", use_container_width=True):
+                st.session_state.pagina = "admin"
+                st.rerun()
+
+        with col4:
             if st.button("📚 Disciplinas", use_container_width=True):
                 st.session_state.pagina = "disciplinas"
                 st.rerun()
 
-        with col4:
+        col5, col6 = st.columns(2)
+
+        with col5:
             if st.button("🎯 Desafios", use_container_width=True):
                 st.session_state.pagina = "desafios"
                 st.rerun()
