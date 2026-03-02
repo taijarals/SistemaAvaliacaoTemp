@@ -70,6 +70,16 @@ st.divider()
 
 
 # =========================================================
+# BOTÃO VOLTAR GLOBAL
+# =========================================================
+if st.session_state.pagina != "inicio":
+    if st.button("⬅️ Voltar", key="btn_voltar_global"):
+        st.session_state.pagina = "inicio"
+        st.rerun()
+
+    st.divider()
+
+# =========================================================
 # 6️⃣ TELA INICIAL
 # =========================================================
 if st.session_state.pagina == "inicio":
