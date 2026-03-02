@@ -21,10 +21,6 @@ def tela_admin():
                 st.error("Senha incorreta!")
         return
 
-    if st.button("Logout"):
-        st.session_state.admin_logado = False
-        st.rerun()
-
     aba = st.selectbox(
         "Seção",
         ["Disciplinas", "Relatórios"]
