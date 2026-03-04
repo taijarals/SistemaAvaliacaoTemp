@@ -1,11 +1,12 @@
 import streamlit as st
-from supabase import create_client
+#from supabase import create_client
 import os
+from services.supabase_client import supabase
 
 # conexão
-url = os.getenv("SUPABASE_URL")
-key = os.getenv("SUPABASE_KEY")
-supabase = create_client(url, key)
+#url = os.getenv("SUPABASE_URL")
+#key = os.getenv("SUPABASE_KEY")
+#supabase = create_client(url, key)
 
 
 def tela_desafios():
