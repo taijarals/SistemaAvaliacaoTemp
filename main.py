@@ -6,6 +6,7 @@ from pages.admin import tela_admin
 from pages.disciplinas import tela_disciplinas
 from pages.desafios import tela_desafios
 from pages.usuarios import tela_usuarios
+from services.supabase_client import supabase
 
 st.write("Keys disponíveis:", list(st.secrets.keys()))
 st.stop()
@@ -30,9 +31,9 @@ if "user" not in st.session_state:
 # =========================================================
 # 3️⃣ CONEXÃO SUPABASE
 # =========================================================
-SUPABASE_URL = st.secrets["SUPABASE_URL"]
-SUPABASE_KEY = st.secrets["SUPABASE_KEY"]
-supabase = create_client(SUPABASE_URL, SUPABASE_KEY)
+#SUPABASE_URL = st.secrets["SUPABASE_URL"]
+#SUPABASE_KEY = st.secrets["SUPABASE_KEY"]
+#supabase = create_client(SUPABASE_URL, SUPABASE_KEY)
 
 # 🔐 Só define sessão se existir
 if "session" in st.session_state:
