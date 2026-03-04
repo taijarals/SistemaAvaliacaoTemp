@@ -5,22 +5,6 @@ from pages.disciplinas import tela_disciplinas
 
 def tela_admin():
 
-    ADMIN_PASSWORD = st.secrets["ADMIN_PASSWORD"]
-
-    if "admin_logado" not in st.session_state:
-        st.session_state.admin_logado = False
-
-    if not st.session_state.admin_logado:
-        senha = st.text_input("Senha", type="password")
-
-        if st.button("Entrar"):
-            if senha == ADMIN_PASSWORD:
-                st.session_state.admin_logado = True
-                st.rerun()
-            else:
-                st.error("Senha incorreta!")
-        return
-
     aba = st.selectbox(
         "Seção",
         ["Disciplinas", "Relatórios"],

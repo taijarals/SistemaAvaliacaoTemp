@@ -31,6 +31,13 @@ SUPABASE_URL = st.secrets["SUPABASE_URL"]
 SUPABASE_KEY = st.secrets["SUPABASE_KEY"]
 supabase = create_client(SUPABASE_URL, SUPABASE_KEY)
 
+# 🔐 Só define sessão se existir
+if "session" in st.session_state:
+    supabase.auth.set_session(
+        st.session_state.session.access_token,
+        st.session_state.session.refresh_token
+    )
+
 
 # =========================================================
 # 4️⃣ BUSCAR PERFIL (apenas uma vez por sessão)
