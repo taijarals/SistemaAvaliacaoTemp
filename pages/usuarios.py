@@ -1,10 +1,11 @@
 import streamlit as st
 from supabase import create_client
+from services.supabase_client import supabase
 
-SUPABASE_URL = st.secrets["SUPABASE_URL"]
-SUPABASE_KEY = st.secrets["SUPABASE_KEY"]
+#SUPABASE_URL = st.secrets["SUPABASE_URL"]
+#SUPABASE_KEY = st.secrets["SUPABASE_KEY"]
 
-supabase = create_client(SUPABASE_URL, SUPABASE_KEY)
+#supabase = create_client(SUPABASE_URL, SUPABASE_KEY)
 
 def tela_usuarios():
 
