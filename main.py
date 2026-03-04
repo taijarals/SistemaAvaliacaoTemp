@@ -157,7 +157,7 @@ elif st.session_state.pagina == "disciplinas" and tipo_usuario == "admin":
     tela_disciplinas()
 
 elif st.session_state.pagina == "cursos" and tipo_usuario == "admin":
-    tela_desafios()
+    tela_cursos()
 
 elif st.session_state.pagina == "desafios" and tipo_usuario == "admin":
     tela_desafios()
