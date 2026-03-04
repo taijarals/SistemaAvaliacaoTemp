@@ -139,6 +139,11 @@ if st.session_state.pagina == "inicio":
                 st.session_state.pagina = "desafios"
                 st.rerun()
 
+        with col6:
+            if st.button("🎯 Cursos", use_container_width=True):
+                st.session_state.pagina = "cursos"
+                st.rerun()
+
 # =========================================================
 # 7️⃣ ROTAS
 # =========================================================
@@ -150,6 +155,9 @@ elif st.session_state.pagina == "admin" and tipo_usuario == "admin":
 
 elif st.session_state.pagina == "disciplinas" and tipo_usuario == "admin":
     tela_disciplinas()
+
+elif st.session_state.pagina == "cursos" and tipo_usuario == "admin":
+    tela_desafios()
 
 elif st.session_state.pagina == "desafios" and tipo_usuario == "admin":
     tela_desafios()
