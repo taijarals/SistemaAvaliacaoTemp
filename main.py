@@ -7,6 +7,9 @@ from pages.disciplinas import tela_disciplinas
 from pages.desafios import tela_desafios
 from pages.usuarios import tela_usuarios
 
+st.write("Keys disponíveis:", list(st.secrets.keys()))
+st.stop()
+
 st.set_page_config(page_title="Sistema de Avaliação", layout="centered")
 
 # =========================================================
