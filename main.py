@@ -128,7 +128,7 @@ if st.session_state.pagina == "inicio":
                 st.rerun()
 
         with col4:
-            if st.button("📚 Disciplinas", use_container_width=True):
+            if st.button("🗂️ Disciplinas", use_container_width=True):
                 st.session_state.pagina = "disciplinas"
                 st.rerun()
 
@@ -140,7 +140,7 @@ if st.session_state.pagina == "inicio":
                 st.rerun()
 
         with col6:
-            if st.button("🎯 Cursos", use_container_width=True):
+            if st.button("📚 Cursos", use_container_width=True):
                 st.session_state.pagina = "cursos"
                 st.rerun()
 
