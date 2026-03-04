@@ -6,6 +6,7 @@ from pages.admin import tela_admin
 from pages.disciplinas import tela_disciplinas
 from pages.desafios import tela_desafios
 from pages.usuarios import tela_usuarios
+from pages.cursos import tela_cursos
 from services.supabase_client import supabase
 
 st.set_page_config(page_title="Sistema de Avaliação", layout="centered")
