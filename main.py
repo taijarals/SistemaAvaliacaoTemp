@@ -152,7 +152,7 @@ elif st.session_state.pagina == "votacao":
     tela_votacao()
 
 elif st.session_state.pagina == "universidades" and tipo_usuario == "admin":
-    tela_admin()
+    tela_universidades()
 
 elif st.session_state.pagina == "disciplinas" and tipo_usuario == "admin":
     tela_disciplinas()
