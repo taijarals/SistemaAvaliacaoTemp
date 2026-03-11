@@ -12,154 +12,83 @@ def tela_disciplinas():
     # ==========================
 
     response_cursos = supabase.table("cursos").select("*").order("nome_curso").execute()
-
-    if not response_cursos.data:
-        st.warning("Cadastre um curso antes de criar disciplinas.")
-        return
-
     cursos = response_cursos.data
-    nomes_cursos = [c["nome_curso"] for c in cursos]
+
+    cursos_dict = {c["id"]: c["nome_curso"] for c in cursos}
+    cursos_dict_rev = {v: k for k, v in cursos_dict.items()}
 
     # ==========================
-    # CADASTRO
+    # BUSCAR DISCIPLINAS
     # ==========================
-
-    st.subheader("➕ Cadastrar Disciplina")
-
-    nome_disciplina = st.text_input("Nome da Disciplina")
-    curso_selecionado = st.selectbox("Curso", nomes_cursos)
-    dia_aula = st.text_input("Dia da Aula")
-
-    if st.button("Cadastrar Disciplina"):
-
-        if not nome_disciplina.strip():
-            st.warning("Informe o nome da disciplina.")
-            return
-
-        curso_id = next(
-            c["id"] for c in cursos if c["nome_curso"] == curso_selecionado
-        )
-
-        response = supabase.table("disciplinas").insert({
-            "nome_disciplina": nome_disciplina,
-            "curso_id": curso_id,
-            "dia_aula": dia_aula
-        }).execute()
-
-        if response.data:
-            st.success("Disciplina cadastrada!")
-            st.rerun()
-        else:
-            st.error("Erro ao cadastrar disciplina.")
-
-    st.divider()
-
-    # ==========================
-    # LISTAGEM COM JOIN
-    # ==========================
-
-    st.subheader("📋 Disciplinas Cadastradas")
 
     response = supabase.table("disciplinas") \
         .select("id, nome_disciplina, dia_aula, cursos(nome_curso)") \
         .order("id") \
         .execute()
 
-    if response.data:
+    if not response.data:
+        st.info("Nenhuma disciplina cadastrada.")
+        return
 
-        dados = []
-        for d in response.data:
-            dados.append({
-                "ID": d["id"],
-                "Disciplina": d["nome_disciplina"],
-                "Curso": d["cursos"]["nome_curso"] if d["cursos"] else "—",
-                "Dia": d["dia_aula"]
-            })
+    dados = []
 
-        df = pd.DataFrame(dados)
+    for d in response.data:
+        dados.append({
+            "id": d["id"],
+            "Disciplina": d["nome_disciplina"],
+            "Curso": d["cursos"]["nome_curso"] if d["cursos"] else "",
+            "Dia": d["dia_aula"]
+        })
 
-        st.dataframe(df, width=True)
+    df = pd.DataFrame(dados)
 
-        st.divider()
+    st.write("### ✏️ Edite diretamente na tabela")
 
-        # ==========================
-        # ALTERAÇÃO
-        # ==========================
+    df_editado = st.data_editor(
+        df,
+        use_container_width=True,
+        num_rows="dynamic"
+    )
 
-        st.subheader("✏️ Alterar Disciplina")
+    # ==========================
+    # BOTÃO SALVAR
+    # ==========================
 
-        disciplina_id_edit = st.selectbox(
-            "Selecione a disciplina",
-            df["ID"],
-            key="disciplina_edit_select"
-        )
+    if st.button("💾 Salvar Alterações"):
 
-        disciplina_atual = next(
-            d for d in response.data if d["id"] == disciplina_id_edit
-        )
+        for _, row in df_editado.iterrows():
 
-        nome_edit = st.text_input(
-            "Nome da Disciplina",
-            value=disciplina_atual["nome_disciplina"],
-            key="edit_nome"
-        )
-
-        curso_edit = st.selectbox(
-            "Curso",
-            nomes_cursos,
-            index=nomes_cursos.index(
-                disciplina_atual["cursos"]["nome_curso"]
-            ) if disciplina_atual["cursos"] else 0,
-            key="edit_curso"
-        )
-
-        dia_edit = st.text_input(
-            "Dia da Aula",
-            value=disciplina_atual["dia_aula"],
-            key="edit_dia"
-        )
-
-        if st.button("Salvar Alterações"):
-
-            curso_id = next(
-                c["id"] for c in cursos if c["nome_curso"] == curso_edit
-            )
+            curso_id = cursos_dict_rev.get(row["Curso"])
 
             supabase.table("disciplinas") \
                 .update({
-                    "nome_disciplina": nome_edit,
-                    "curso_id": curso_id,
-                    "dia_aula": dia_edit
+                    "nome_disciplina": row["Disciplina"],
+                    "dia_aula": row["Dia"],
+                    "curso_id": curso_id
                 }) \
-                .eq("id", disciplina_id_edit) \
+                .eq("id", row["id"]) \
                 .execute()
 
-            st.success("Disciplina atualizada!")
-            st.rerun()
+        st.success("Alterações salvas!")
+        st.rerun()
 
-        st.divider()
+    # ==========================
+    # EXCLUSÃO
+    # ==========================
 
-        # ==========================
-        # EXCLUSÃO
-        # ==========================
+    st.divider()
 
-        st.subheader("🗑️ Excluir Disciplina")
+    disciplina_delete = st.selectbox(
+        "Selecione disciplina para excluir",
+        df["id"]
+    )
 
-        disciplina_id = st.selectbox(
-            "Selecione a disciplina para excluir",
-            df["ID"],
-            key="disciplina_delete_select"
-        )
+    if st.button("🗑️ Excluir Disciplina"):
 
-        if st.button("Excluir Disciplina"):
+        supabase.table("disciplinas") \
+            .delete() \
+            .eq("id", disciplina_delete) \
+            .execute()
 
-            supabase.table("disciplinas") \
-                .delete() \
-                .eq("id", disciplina_id) \
-                .execute()
-
-            st.success("Disciplina excluída!")
-            st.rerun()
-
-    else:
-        st.info("Nenhuma disciplina cadastrada.")
+        st.success("Disciplina excluída!")
+        st.rerun()
