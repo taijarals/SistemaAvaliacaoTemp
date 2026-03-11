@@ -78,7 +78,7 @@ def tela_disciplinas():
 
         df = pd.DataFrame(dados)
 
-        st.dataframe(df, use_container_width=True)
+        st.dataframe(df, width=True)
 
         st.divider()
 
