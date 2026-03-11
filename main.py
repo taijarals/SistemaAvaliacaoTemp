@@ -125,7 +125,7 @@ if st.session_state.pagina == "inicio":
 
         with col3:
             if st.button("🏫 Universidades", width="stretch"):
-                st.session_state.pagina = "admin"
+                st.session_state.pagina = "Universidades"
                 st.rerun()
 
         with col4:
