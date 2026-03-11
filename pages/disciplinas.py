@@ -43,6 +43,8 @@ def tela_disciplinas():
 
     df = pd.DataFrame(dados)
 
+    st.write("### ✏️ Edite diretamente na tabela")
+
     df_editado = st.data_editor(
         df,
         width="stretch",
