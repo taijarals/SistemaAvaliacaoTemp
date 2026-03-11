@@ -40,7 +40,7 @@ def tela_cursos():
     if response.data:
 
         df = pd.DataFrame(response.data)
-        st.dataframe(df, use_container_width=True)
+        st.dataframe(df, width="stretch")
 
         st.divider()
 
