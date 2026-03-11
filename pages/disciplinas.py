@@ -24,6 +24,8 @@ def tela_disciplinas():
     # CADASTRO
     # ==========================
 
+    st.subheader("➕ Cadastrar Disciplina")
+
     nome_disciplina = st.text_input("Nome da Disciplina")
     curso_selecionado = st.selectbox("Curso", nomes_cursos)
     dia_aula = st.text_input("Dia da Aula")
@@ -56,6 +58,8 @@ def tela_disciplinas():
     # LISTAGEM COM JOIN
     # ==========================
 
+    st.subheader("📋 Disciplinas Cadastradas")
+
     response = supabase.table("disciplinas") \
         .select("id, nome_disciplina, dia_aula, cursos(nome_curso)") \
         .order("id") \
@@ -73,13 +77,73 @@ def tela_disciplinas():
             })
 
         df = pd.DataFrame(dados)
+
         st.dataframe(df, use_container_width=True)
+
+        st.divider()
+
+        # ==========================
+        # ALTERAÇÃO
+        # ==========================
+
+        st.subheader("✏️ Alterar Disciplina")
+
+        disciplina_id_edit = st.selectbox(
+            "Selecione a disciplina",
+            df["ID"],
+            key="disciplina_edit_select"
+        )
+
+        disciplina_atual = next(
+            d for d in response.data if d["id"] == disciplina_id_edit
+        )
+
+        nome_edit = st.text_input(
+            "Nome da Disciplina",
+            value=disciplina_atual["nome_disciplina"],
+            key="edit_nome"
+        )
+
+        curso_edit = st.selectbox(
+            "Curso",
+            nomes_cursos,
+            index=nomes_cursos.index(
+                disciplina_atual["cursos"]["nome_curso"]
+            ) if disciplina_atual["cursos"] else 0,
+            key="edit_curso"
+        )
+
+        dia_edit = st.text_input(
+            "Dia da Aula",
+            value=disciplina_atual["dia_aula"],
+            key="edit_dia"
+        )
+
+        if st.button("Salvar Alterações"):
+
+            curso_id = next(
+                c["id"] for c in cursos if c["nome_curso"] == curso_edit
+            )
+
+            supabase.table("disciplinas") \
+                .update({
+                    "nome_disciplina": nome_edit,
+                    "curso_id": curso_id,
+                    "dia_aula": dia_edit
+                }) \
+                .eq("id", disciplina_id_edit) \
+                .execute()
+
+            st.success("Disciplina atualizada!")
+            st.rerun()
 
         st.divider()
 
         # ==========================
         # EXCLUSÃO
         # ==========================
+
+        st.subheader("🗑️ Excluir Disciplina")
 
         disciplina_id = st.selectbox(
             "Selecione a disciplina para excluir",
