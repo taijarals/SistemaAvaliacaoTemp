@@ -16,6 +16,7 @@ def tela_disciplinas():
 
     cursos_dict = {c["id"]: c["nome_curso"] for c in cursos}
     cursos_dict_rev = {v: k for k, v in cursos_dict.items()}
+    lista_cursos = list(cursos_dict.values())
 
     # ==========================
     # BUSCAR DISCIPLINAS
@@ -47,11 +48,21 @@ def tela_disciplinas():
     df_editado = st.data_editor(
         df,
         use_container_width=True,
-        num_rows="dynamic"
+        num_rows="dynamic",
+        column_config={
+            "Curso": st.column_config.SelectboxColumn(
+                "Curso",
+                options=lista_cursos,
+                help="Selecione o curso"
+            ),
+            "Disciplina": st.column_config.TextColumn("Disciplina"),
+            "Dia": st.column_config.TextColumn("Dia da Aula"),
+            "id": st.column_config.NumberColumn("ID", disabled=True)
+        }
     )
 
     # ==========================
-    # BOTÃO SALVAR
+    # SALVAR ALTERAÇÕES
     # ==========================
 
     if st.button("💾 Salvar Alterações"):
@@ -70,25 +81,4 @@ def tela_disciplinas():
                 .execute()
 
         st.success("Alterações salvas!")
-        st.rerun()
-
-    # ==========================
-    # EXCLUSÃO
-    # ==========================
-
-    st.divider()
-
-    disciplina_delete = st.selectbox(
-        "Selecione disciplina para excluir",
-        df["id"]
-    )
-
-    if st.button("🗑️ Excluir Disciplina"):
-
-        supabase.table("disciplinas") \
-            .delete() \
-            .eq("id", disciplina_delete) \
-            .execute()
-
-        st.success("Disciplina excluída!")
         st.rerun()
