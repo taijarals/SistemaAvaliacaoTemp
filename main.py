@@ -124,7 +124,7 @@ if st.session_state.pagina == "inicio":
         col3, col4 = st.columns(2)
 
         with col3:
-            if st.button("🔒 Painel Administrativo", width="stretch"):
+            if st.button("🏫 Universidades", width="stretch"):
                 st.session_state.pagina = "admin"
                 st.rerun()
 
@@ -155,6 +155,9 @@ elif st.session_state.pagina == "admin" and tipo_usuario == "admin":
     tela_admin()
 
 elif st.session_state.pagina == "disciplinas" and tipo_usuario == "admin":
+    tela_disciplinas()
+
+elif st.session_state.pagina == "universidades" and tipo_usuario == "admin":
     tela_disciplinas()
 
 elif st.session_state.pagina == "cursos" and tipo_usuario == "admin":
