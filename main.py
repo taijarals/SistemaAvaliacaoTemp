@@ -151,13 +151,10 @@ if st.session_state.pagina == "inicio":
 elif st.session_state.pagina == "votacao":
     tela_votacao()
 
-elif st.session_state.pagina == "admin" and tipo_usuario == "admin":
+elif st.session_state.pagina == "universidades" and tipo_usuario == "admin":
     tela_admin()
 
 elif st.session_state.pagina == "disciplinas" and tipo_usuario == "admin":
-    tela_disciplinas()
-
-elif st.session_state.pagina == "universidades" and tipo_usuario == "admin":
     tela_disciplinas()
 
 elif st.session_state.pagina == "cursos" and tipo_usuario == "admin":
