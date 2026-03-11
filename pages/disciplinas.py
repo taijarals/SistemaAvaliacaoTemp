@@ -47,7 +47,7 @@ def tela_disciplinas():
 
     df_editado = st.data_editor(
         df,
-        width="stretch"=True,
+        width="stretch",
         num_rows="dynamic",
         column_config={
             "Curso": st.column_config.SelectboxColumn(
