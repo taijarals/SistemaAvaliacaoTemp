@@ -29,7 +29,7 @@ def tela_votacao():
 
     opcoes = [
         f"{d.get('nome_disciplina')} - {d.get('nome_curso','Curso')} ({d.get('dia_aula')})"
-        for d in disciplinas
+        for d in disciplinas_join_cursos
     ]
 
     escolha = st.selectbox("Disciplina", opcoes)
