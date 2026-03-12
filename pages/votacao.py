@@ -5,6 +5,10 @@ def buscar_disciplinas():
     response = supabase.table("disciplinas").select("*").execute()
     return response.data if response.data else []
 
+def buscar_disciplinas_join_cursos():
+    response = supabase.table("disciplinas").select("nome_disciplina, dia_aula, cursos(nome_curso)").execute()
+    return response.data if response.data else []
+
 def tela_votacao():
 
     st.title("Sistema de Votação")
@@ -12,13 +16,19 @@ def tela_votacao():
     nome = st.text_input("Nome Completo")
 
     disciplinas = buscar_disciplinas()
+    disciplinas_join_cursos = buscar_disciplinas_join_cursos()
 
     if not disciplinas:
         st.warning("Nenhuma disciplina cadastrada.")
         return
 
+    #opcoes = [
+    #    f"{d['nome_disciplina']} - {d['nome_curso']} ({d['dia_aula']})"
+    #    for d in disciplinas
+    #]
+
     opcoes = [
-        f"{d['nome_disciplina']} - {d['nome_curso']} ({d['dia_aula']})"
+        f"{d.get('nome_disciplina')} - {d.get('nome_curso','Curso')} ({d.get('dia_aula')})"
         for d in disciplinas
     ]
 
