@@ -115,34 +115,50 @@ if st.session_state.pagina == "inicio":
             st.session_state.pagina = "usuarios"
             st.rerun()
 
+    with col3:
+        if st.button("👥 Check-in Aulas", width="stretch"):
+            st.session_state.pagina = "usuarios"
+            st.rerun()
+
     # Área exclusiva de admin
     if tipo_usuario == "admin":
 
         st.divider()
         st.subheader("Área Administrativa")
 
-        col3, col4 = st.columns(2)
+        col4, col5 = st.columns(2)
 
         with col3:
             if st.button("🏫 Universidades", width="stretch"):
-                st.session_state.pagina = "Universidades"
+                st.session_state.pagina = "universidades"
+                st.rerun()
+        
+        with col4:
+            if st.button("📱 Checkin", width="stretch"):
+                st.session_state.pagina = "checkin"
                 st.rerun()
 
-        with col4:
+
+        with col5:
             if st.button("🗂️ Disciplinas", width="stretch"):
                 st.session_state.pagina = "disciplinas"
                 st.rerun()
 
-        col5, col6 = st.columns(2)
+        col6, col7 = st.columns(2)
 
-        with col5:
+        with col6:
             if st.button("🎯 Desafios", width="stretch"):
                 st.session_state.pagina = "desafios"
                 st.rerun()
 
-        with col6:
+        with col7:
             if st.button("📚 Cursos", width="stretch"):
                 st.session_state.pagina = "cursos"
+                st.rerun()
+
+        with col8:
+            if st.button("💡 Aulas", width="stretch"):
+                st.session_state.pagina = "aulas"
                 st.rerun()
 
 # =========================================================
@@ -165,6 +181,10 @@ elif st.session_state.pagina == "desafios" and tipo_usuario == "admin":
 
 elif st.session_state.pagina == "usuarios":
     tela_usuarios()
+
+elif st.session_state.pagina == "checkin":
+    tela_checkin():
+
 
 else:
     st.warning("Você não tem permissão para acessar esta página.")
